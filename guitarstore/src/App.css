@@ -250,17 +250,6 @@
   text-align: center;
 }
 
-.inventoryContent {
-  display: grid;
-  grid-template-columns: 150px minmax(0, 1fr);
-  gap: 18px;
-  align-items: start;
-}
-
-.inventoryTableArea {
-  min-width: 0;
-}
-
 .inventoryTableWrap {
   overflow-x: auto;
 }
@@ -302,56 +291,11 @@
   font-weight: 700;
 }
 
-.inventoryTable tbody tr.dimmedRow {
-  opacity: 0.42;
-}
-
-.inventoryTable tbody tr.filteredRow td {
-  box-shadow: inset 0 2px 0 rgba(255, 215, 0, 0.45),
-    inset 0 -2px 0 rgba(255, 215, 0, 0.45);
-}
-
 .tableActions {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
   margin-top: 16px;
-}
-
-.filterControls {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
-  margin: 0;
-  padding: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-}
-
-.filterControls legend {
-  padding: 0 4px;
-  color: #ffffff;
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
-.filterControls label {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.8rem;
-  cursor: pointer;
-  user-select: none;
-}
-
-.filterControls input {
-  accent-color: #ffd700;
-  cursor: pointer;
 }
 
 .tableActions button,
@@ -404,33 +348,9 @@
   text-align: right;
 }
 
-.detailsGrid .roleBadge {
-  justify-self: end;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #ffd700;
-  color: #000000;
-  font-size: 0.82rem;
-}
-
 .detailsToggle {
   margin-top: 20px;
   width: 100%;
-}
-
-@media (max-width: 980px) {
-  .inventoryContent {
-    grid-template-columns: 1fr;
-  }
-
-  .filterControls {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .filterControls legend {
-    width: 100%;
-  }
 }
 
 @keyframes slideInFront {

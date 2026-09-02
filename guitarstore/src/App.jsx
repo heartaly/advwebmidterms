@@ -21,7 +21,6 @@ function App() {
     const [guitars, setGuitars] = useState([]);
     const [selectedBodyType, setSelectedBodyType] = useState('Electric');
     const [selectedGuitar, setSelectedGuitar] = useState(null);
-    const [showForm, setShowForm] = useState(false);
 
     const handleAddGuitar = (guitar) => {
         const newGuitar = {
@@ -30,8 +29,6 @@ function App() {
         };
 
         setGuitars((prev) => [...prev, newGuitar]);
-    setSelectedGuitar(newGuitar);
-    setShowForm(false);
     };
 
     return (
@@ -56,21 +53,11 @@ function App() {
                     </div>
 
                     <div className="formPanel">
-                        {showForm ? (
-                            <GuitarForm
-                                onAddGuitar={handleAddGuitar}
-                                selectedBodyType={selectedBodyType}
-                                onBodyTypeChange={setSelectedBodyType}
-                            />
-                        ) : (
-                            <button
-                                type="button"
-                                className="formToggleButton"
-                                onClick={() => setShowForm(true)}
-                            >
-                                Add Guitar
-                            </button>
-                        )}
+                        <GuitarForm
+                            onAddGuitar={handleAddGuitar}
+                            selectedBodyType={selectedBodyType}
+                            onBodyTypeChange={setSelectedBodyType}
+                        />
                     </div>
                 </div>
 

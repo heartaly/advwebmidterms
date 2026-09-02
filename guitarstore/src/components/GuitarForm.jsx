@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function GuitarForm({ onAddGuitar, selectedBodyType, onBodyTypeChange }) {
     const [guitarModel, setGuitarModel] = useState('');
@@ -9,53 +9,46 @@ function GuitarForm({ onAddGuitar, selectedBodyType, onBodyTypeChange }) {
     const [userRole, setUserRole] = useState('');
     const [errors, setErrors] = useState({});
 
-    const getValidationErrors = (values) => {
+    useEffect(() => {
+        if (selectedBodyType) {
+            setBodyType(selectedBodyType);
+        }
+    }, [selectedBodyType]);
+
+    const validateForm = () => {
         const newErrors = {};
 
-        if (values.guitarModel.trim().length < 3) {
+        if (guitarModel.trim().length < 3 || guitarModel === '') {
             newErrors.guitarModel = 'Guitar model must be at least 3 characters long.';
         }
 
-        if (values.bodyType === '') {
+        if (bodyType === '') {
             newErrors.bodyType = 'Body type is required.';
         }
 
-        if (values.brandName.trim().length < 3) {
+        if (brandName === '' || brandName.trim().length < 3) {
             newErrors.brandName = 'Brand name must be at least 3 characters long.';
         }
 
-        if (values.stockQuantity === '' || values.stockQuantity < 1 || values.stockQuantity > 100) {
+        if (stockQuantity === '' || stockQuantity < 1 || stockQuantity > 100) {
             newErrors.stockQuantity = 'Stock quantity must be between 1 and 100.';
         }
 
-        if (values.manufacturerName.trim().length < 3) {
+        if (manufacturerName === '' || manufacturerName.trim().length < 3) {
             newErrors.manufacturerName = 'Manufacturer name must be at least 3 characters long.';
         }
 
-        if (values.userRole === '') {
+        if (userRole === '') {
             newErrors.userRole = 'User role is required.';
         }
 
-        return newErrors;
-    };
-
-    const getCurrentValues = () => ({
-        guitarModel,
-        bodyType,
-        brandName,
-        stockQuantity,
-        manufacturerName,
-        userRole,
-    });
-
-    const updateErrors = (field, value) => {
-        setErrors(getValidationErrors({ ...getCurrentValues(), [field]: value }));
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleBodyTypeChange = (event) => {
         const nextType = event.target.value;
         setBodyType(nextType);
-        updateErrors('bodyType', nextType);
         if (onBodyTypeChange) {
             onBodyTypeChange(nextType);
         }
@@ -64,10 +57,7 @@ function GuitarForm({ onAddGuitar, selectedBodyType, onBodyTypeChange }) {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        const validationErrors = getValidationErrors(getCurrentValues());
-        setErrors(validationErrors);
-
-        if (Object.keys(validationErrors).length === 0) {
+        if (validateForm()) {
             const newGuitar = {
                 guitarModel,
                 bodyType,
@@ -93,10 +83,7 @@ function GuitarForm({ onAddGuitar, selectedBodyType, onBodyTypeChange }) {
                     <input
                         type="text"
                         value={guitarModel}
-                        onChange={(e) => {
-                            setGuitarModel(e.target.value);
-                            updateErrors('guitarModel', e.target.value);
-                        }}
+                        onChange={(e) => setGuitarModel(e.target.value)}
                     />
                     {errors.guitarModel && <p className="errorText">{errors.guitarModel}</p>}
                 </div>
@@ -117,10 +104,7 @@ function GuitarForm({ onAddGuitar, selectedBodyType, onBodyTypeChange }) {
                     <input
                         type="text"
                         value={brandName}
-                        onChange={(e) => {
-                            setBrandName(e.target.value);
-                            updateErrors('brandName', e.target.value);
-                        }}
+                        onChange={(e) => setBrandName(e.target.value)}
                     />
                     {errors.brandName && <p className="errorText">{errors.brandName}</p>}
                 </div>
@@ -132,11 +116,7 @@ function GuitarForm({ onAddGuitar, selectedBodyType, onBodyTypeChange }) {
                         min={1}
                         max={100}
                         value={stockQuantity}
-                        onChange={(e) => {
-                            const nextQuantity = e.target.value === '' ? '' : Number(e.target.value);
-                            setStockQuantity(nextQuantity);
-                            updateErrors('stockQuantity', nextQuantity);
-                        }}
+                        onChange={(e) => setStockQuantity(Number(e.target.value))}
                     />
                     {errors.stockQuantity && <p className="errorText">{errors.stockQuantity}</p>}
                 </div>
@@ -146,10 +126,7 @@ function GuitarForm({ onAddGuitar, selectedBodyType, onBodyTypeChange }) {
                     <input
                         type="text"
                         value={manufacturerName}
-                        onChange={(e) => {
-                            setManufacturerName(e.target.value);
-                            updateErrors('manufacturerName', e.target.value);
-                        }}
+                        onChange={(e) => setManufacturerName(e.target.value)}
                     />
                     {errors.manufacturerName && (
                         <p className="errorText">{errors.manufacturerName}</p>
@@ -165,10 +142,7 @@ function GuitarForm({ onAddGuitar, selectedBodyType, onBodyTypeChange }) {
                                 name="userRole"
                                 value="Merchant"
                                 checked={userRole === 'Merchant'}
-                                onChange={(e) => {
-                                    setUserRole(e.target.value);
-                                    updateErrors('userRole', e.target.value);
-                                }}
+                                onChange={(e) => setUserRole(e.target.value)}
                             />
                             Merchant
                         </label>
@@ -179,10 +153,7 @@ function GuitarForm({ onAddGuitar, selectedBodyType, onBodyTypeChange }) {
                                 name="userRole"
                                 value="Consumer"
                                 checked={userRole === 'Consumer'}
-                                onChange={(e) => {
-                                    setUserRole(e.target.value);
-                                    updateErrors('userRole', e.target.value);
-                                }}
+                                onChange={(e) => setUserRole(e.target.value)}
                             />
                             Consumer
                         </label>

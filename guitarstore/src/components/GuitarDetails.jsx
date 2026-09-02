@@ -1,14 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 function GuitarDetails({ guitar }) {
-    const detailsRef = useRef(null);
+    const [activeGuitar, setActiveGuitar] = useState(null);
+    const [showMerchant, setShowMerchant] = useState(true);
+
     useEffect(() => {
-        if (guitar) {
-            detailsRef.current?.focus();
-        }
+        setActiveGuitar(guitar);
     }, [guitar]);
 
-    if (guitar === null) {
+    if (activeGuitar === null) {
         return (
             <div className="detailsCard emptyState">
                 <h2>Guitar Details</h2>
@@ -17,30 +17,42 @@ function GuitarDetails({ guitar }) {
         );
     }
 
+    if (!showMerchant && activeGuitar.userRole === 'Merchant') {
+        return (
+            <div className="detailsCard emptyState">
+                <h2>Guitar Details</h2>
+                <p>Merchant records are hidden.</p>
+            </div>
+        );
+    }
+
     return (
-        <div className="detailsCard" ref={detailsRef} tabIndex={-1}>
+        <div className="detailsCard">
             <h2>Guitar Details</h2>
 
             <div className="detailsGrid">
                 <span>Guitar Model</span>
-                <strong>{guitar.guitarModel}</strong>
+                <strong>{activeGuitar.guitarModel}</strong>
 
                 <span>Body Type</span>
-                <strong>{guitar.bodyType}</strong>
+                <strong>{activeGuitar.bodyType}</strong>
 
                 <span>Brand Name</span>
-                <strong>{guitar.brandName}</strong>
+                <strong>{activeGuitar.brandName}</strong>
 
                 <span>Stock Quantity</span>
-                <strong>{guitar.stockQuantity}</strong>
+                <strong>{activeGuitar.stockQuantity}</strong>
 
                 <span>Manufacturer Name</span>
-                <strong>{guitar.manufacturerName}</strong>
+                <strong>{activeGuitar.manufacturerName}</strong>
 
                 <span>User Role</span>
-                <strong className="roleBadge">{guitar.userRole}</strong>
+                <strong>{activeGuitar.userRole}</strong>
             </div>
 
+            <button className="detailsToggle" onClick={() => setShowMerchant(!showMerchant)}>
+                {showMerchant ? 'Hide Merchants' : 'Show Merchants'}
+            </button>
         </div>
     );
 }

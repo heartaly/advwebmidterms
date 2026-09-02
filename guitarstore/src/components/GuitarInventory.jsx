@@ -8,23 +8,10 @@ import {
 import { useState } from 'react';
 
 function GuitarInventory({ guitars, onSelectGuitar, selectedGuitar }) {
-    const [filterCategory, setFilterCategory] = useState('All');
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 5,
     });
-
-    const filteredGuitars = filterCategory === 'All'
-        ? guitars
-        : guitars.filter(
-            (guitar) =>
-                guitar.bodyType === filterCategory || guitar.userRole === filterCategory,
-        );
-
-    const handleCategoryChange = (category) => {
-        setFilterCategory(category);
-        setPagination((current) => ({ ...current, pageIndex: 0 }));
-    };
 
     const columns = [
         { header: 'Guitar Model', accessorKey: 'guitarModel' },
@@ -36,7 +23,7 @@ function GuitarInventory({ guitars, onSelectGuitar, selectedGuitar }) {
     ];
 
     const table = useReactTable({
-        data: filteredGuitars,
+        data: guitars,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -50,87 +37,51 @@ function GuitarInventory({ guitars, onSelectGuitar, selectedGuitar }) {
         <div className="inventoryCard">
             <h2>Guitar Inventory</h2>
 
-            <div className="inventoryContent">
-                <fieldset className="filterControls">
-                    <legend>Filter by category</legend>
-                    {['All', 'Electric', 'Acoustic', 'Bass', 'Classical', 'Merchant', 'Consumer'].map(
-                        (category) => {
-                            const inputId = `filter-${category.toLowerCase()}`;
+            <div className="inventoryTableWrap">
+                <table className="inventoryTable">
+                    <thead>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <tr key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => (
+                                    <th key={header.id}>
+                                        {flexRender(
+                                            header.column.columnDef.header,
+                                            header.getContext(),
+                                        )}
+                                    </th>
+                                ))}
+                            </tr>
+                        ))}
+                    </thead>
+
+                    <tbody>
+                        {table.getRowModel().rows.map((row) => {
+                            const isSelected =
+                                selectedGuitar &&
+                                selectedGuitar.id === row.original.id;
 
                             return (
-                                <label
-                                    key={category}
-                                    htmlFor={inputId}
-                                    onClick={(event) => event.stopPropagation()}
+                                <tr
+                                    key={row.id}
+                                    className={isSelected ? 'selectedRow' : ''}
+                                    onClick={() => onSelectGuitar(row.original)}
                                 >
-                                    <input
-                                        id={inputId}
-                                        type="radio"
-                                        name="filterCategory"
-                                        value={category}
-                                        checked={filterCategory === category}
-                                        onChange={(event) => handleCategoryChange(event.target.value)}
-                                    />
-                                    <span>{category}</span>
-                                </label>
+                                    {row.getVisibleCells().map((cell) => (
+                                        <td key={cell.id}>
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext(),
+                                            )}
+                                        </td>
+                                    ))}
+                                </tr>
                             );
-                        },
-                    )}
-                </fieldset>
-
-                <div className="inventoryTableArea">
-                    <div className="inventoryTableWrap">
-                        <table className="inventoryTable">
-                            <thead>
-                                {table.getHeaderGroups().map((headerGroup) => (
-                                    <tr key={headerGroup.id}>
-                                        {headerGroup.headers.map((header) => (
-                                            <th key={header.id}>
-                                                {flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext(),
-                                                )}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </thead>
-
-                            <tbody>
-                                {table.getRowModel().rows.map((row) => {
-                                    const isSelected =
-                                        selectedGuitar &&
-                                        selectedGuitar.id === row.original.id;
-
-                                    return (
-                                        <tr
-                                            key={row.id}
-                                            className={isSelected ? 'selectedRow' : ''}
-                                            onClick={() => onSelectGuitar(row.original)}
-                                        >
-                                            {row.getVisibleCells().map((cell) => (
-                                                <td key={cell.id}>
-                                                    {flexRender(
-                                                        cell.column.columnDef.cell,
-                                                        cell.getContext(),
-                                                    )}
-                                                </td>
-                                            ))}
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {filteredGuitars.length === 0 && (
-                        <p className="emptyTableMessage">No guitars match this category.</p>
-                    )}
-                </div>
+                        })}
+                    </tbody>
+                </table>
             </div>
 
             <div className="tableActions">
-
                 <button
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage()}
