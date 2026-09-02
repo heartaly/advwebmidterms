@@ -1,21 +1,21 @@
-import './App.css'
+import {useState} from 'react';
+import './App.css';
+import GuitarForm from './components/GuitarForm';
 
 function App() {
+    const [guitars, setGuitars] = useState([]);
 
-  return (
-    <div className="App">
-      <h1>Guitar Store</h1>
+    const handleAddGuitar = (guitar) => {
+        setGuitars([...guitars, guitar]);
+    };
 
-      <GuitarForm onAddGuitar={handleAddGuitar} />
+    return (
+        <div className="App">
+            <h1>Guitar Store</h1>
 
-      <GuitarInventory
-        guitars={guitars}
-        onDeleteGuitar={handleDeleteGuitar} />
-
-        <GuitarDetails guitar={selectedGuitar} />
-    </div>
-
-  );
+            <GuitarForm onAddGuitar={handleAddGuitar} />
+        </div>
+    );
 }
 
-export default App
+export default App;
