@@ -2,107 +2,147 @@ import {
     flexRender,
     getCoreRowModel,
     getPaginationRowModel,
-    useReactTable
+    useReactTable,
 } from '@tanstack/react-table';
 
-import {useState} from 'react';
+import { useState } from 'react';
 
-function GuitarInventory({guitars, onSelectGuitar}) {
+function GuitarInventory({ guitars, onSelectGuitar, selectedGuitar }) {
+    const [filterCategory, setFilterCategory] = useState('All');
     const [pagination, setPagination] = useState({
         pageIndex: 0,
-        pageSize: 5
+        pageSize: 5,
     });
 
+    const filteredGuitars = filterCategory === 'All'
+        ? guitars
+        : guitars.filter(
+            (guitar) =>
+                guitar.bodyType === filterCategory || guitar.userRole === filterCategory,
+        );
+
+    const handleCategoryChange = (category) => {
+        setFilterCategory(category);
+        setPagination((current) => ({ ...current, pageIndex: 0 }));
+    };
+
     const columns = [
-        {
-            header: 'Guitar Model',
-            accessorKey: 'guitarModel'
-        },
-        {
-            header: 'Body Type',
-            accessorKey: 'bodyType'
-        },
-        {
-            header: 'Brand Name',
-            accessorKey: 'brandName'
-        },
-        {
-            header: 'Stock',
-            accessorKey: 'stockQuantity'
-        },
-        {
-            header: 'Manufacturer',
-            accessorKey: 'manufacturerName'
-        },
-        {
-            header: 'Role',
-            accessorKey: 'userRole'
-        }
+        { header: 'Guitar Model', accessorKey: 'guitarModel' },
+        { header: 'Body Type', accessorKey: 'bodyType' },
+        { header: 'Brand Name', accessorKey: 'brandName' },
+        { header: 'Stock', accessorKey: 'stockQuantity' },
+        { header: 'Manufacturer', accessorKey: 'manufacturerName' },
+        { header: 'Role', accessorKey: 'userRole' },
     ];
 
     const table = useReactTable({
-        data: guitars,
-        columns: columns,
+        data: filteredGuitars,
+        columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         onPaginationChange: setPagination,
         state: {
-            pagination
-        }
+            pagination,
+        },
     });
 
     return (
-        <div>
+        <div className="inventoryCard">
             <h2>Guitar Inventory</h2>
 
-            <table>
-                <thead>
-                    {table.getHeaderGroups().map(headerGroup => (
-                        <tr key={headerGroup.id}>
-                            {headerGroup.headers.map(header => (
-                                <th key={header.id}>
-                                    {flexRender(
-                                        header.column.columnDef.header,
-                                        header.getContext()
-                                    )}
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
+            <div className="inventoryContent">
+                <fieldset className="filterControls">
+                    <legend>Filter by category</legend>
+                    {['All', 'Electric', 'Acoustic', 'Bass', 'Classical', 'Merchant', 'Consumer'].map(
+                        (category) => {
+                            const inputId = `filter-${category.toLowerCase()}`;
 
-                <tbody>
-                    {table.getRowModel().rows.map(row => (
-                        <tr
-                            key={row.id}
-                            onClick={() => onSelectGuitar(row.original)}
-                        >
-                            {row.getVisibleCells().map(cell => (
-                                <td key={cell.id}>
-                                    {flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext()
-                                    )}
-                                </td>
-                            ))}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                            return (
+                                <label key={category} htmlFor={inputId}>
+                                    <input
+                                        id={inputId}
+                                        type="radio"
+                                        name="filterCategory"
+                                        value={category}
+                                        checked={filterCategory === category}
+                                        onChange={() => handleCategoryChange(category)}
+                                    />
+                                    <span onClick={() => handleCategoryChange(category)}>
+                                        {category}
+                                    </span>
+                                </label>
+                            );
+                        },
+                    )}
+                </fieldset>
 
-            <button
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-            >
-                Previous
-            </button>
+                <div className="inventoryTableArea">
+                    <div className="inventoryTableWrap">
+                        <table className="inventoryTable">
+                            <thead>
+                                {table.getHeaderGroups().map((headerGroup) => (
+                                    <tr key={headerGroup.id}>
+                                        {headerGroup.headers.map((header) => (
+                                            <th key={header.id}>
+                                                {flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext(),
+                                                )}
+                                            </th>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </thead>
 
-            <button
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-            >
-                Next
-            </button>
+                            <tbody>
+                                {table.getRowModel().rows.map((row) => {
+                                    const isSelected =
+                                        selectedGuitar &&
+                                        selectedGuitar.id === row.original.id;
+
+                                    return (
+                                        <tr
+                                            key={row.id}
+                                            className={isSelected ? 'selectedRow' : ''}
+                                            onClick={() => onSelectGuitar(row.original)}
+                                        >
+                                            {row.getVisibleCells().map((cell) => (
+                                                <td key={cell.id}>
+                                                    {flexRender(
+                                                        cell.column.columnDef.cell,
+                                                        cell.getContext(),
+                                                    )}
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {filteredGuitars.length === 0 && (
+                        <p className="emptyTableMessage">No guitars match this category.</p>
+                    )}
+                </div>
+            </div>
+
+            <div className="tableActions">
+
+                <button
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                >
+                    Previous
+                </button>
+
+                <button
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                >
+                    Next
+                </button>
+            </div>
         </div>
     );
 }

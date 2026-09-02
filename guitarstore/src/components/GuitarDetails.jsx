@@ -1,39 +1,46 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useRef } from 'react';
 
-function GuitarDetails({guitar}) {
-    const [activeGuitar, setActiveGuitar] = useState(null);
-    const [showMerchant, setShowMerchant] = useState(true);
-
+function GuitarDetails({ guitar }) {
+    const detailsRef = useRef(null);
     useEffect(() => {
-        setActiveGuitar(guitar);
+        if (guitar) {
+            detailsRef.current?.focus();
+        }
     }, [guitar]);
 
-    if (activeGuitar === null) {
-        return <p>Select a guitar from the table.</p>;
-    }
-
-    if (!showMerchant && activeGuitar.userRole === 'Merchant') {
-        return <p>Merchant records are hidden.</p>;
+    if (guitar === null) {
+        return (
+            <div className="detailsCard emptyState">
+                <h2>Guitar Details</h2>
+                <p>Select a guitar from the table.</p>
+            </div>
+        );
     }
 
     return (
-        <div>
+        <div className="detailsCard" ref={detailsRef} tabIndex={-1}>
             <h2>Guitar Details</h2>
 
-            <p>Guitar Model: {activeGuitar.guitarModel}</p>
-            <p>Body Type: {activeGuitar.bodyType}</p>
-            <p>Brand Name: {activeGuitar.brandName}</p>
-            <p>Stock Quantity: {activeGuitar.stockQuantity}</p>
-            <p>Manufacturer Name: {activeGuitar.manufacturerName}</p>
+            <div className="detailsGrid">
+                <span>Guitar Model</span>
+                <strong>{guitar.guitarModel}</strong>
 
-            <p>
-                User Role:
-                <span>{activeGuitar.userRole}</span>
-            </p>
+                <span>Body Type</span>
+                <strong>{guitar.bodyType}</strong>
 
-            <button onClick={() => setShowMerchant(!showMerchant)}>
-                {showMerchant ? 'Hide Merchants' : 'Show Merchants'}
-            </button>
+                <span>Brand Name</span>
+                <strong>{guitar.brandName}</strong>
+
+                <span>Stock Quantity</span>
+                <strong>{guitar.stockQuantity}</strong>
+
+                <span>Manufacturer Name</span>
+                <strong>{guitar.manufacturerName}</strong>
+
+                <span>User Role</span>
+                <strong className="roleBadge">{guitar.userRole}</strong>
+            </div>
+
         </div>
     );
 }
