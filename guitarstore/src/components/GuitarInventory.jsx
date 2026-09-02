@@ -5,29 +5,45 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
+const columns = [
+    { header: 'Guitar Model', accessorKey: 'guitarModel' },
+    { header: 'Body Type', accessorKey: 'bodyType' },
+    { header: 'Brand Name', accessorKey: 'brandName' },
+    { header: 'Stock', accessorKey: 'stockQuantity' },
+    { header: 'Manufacturer', accessorKey: 'manufacturerName' },
+    { header: 'Role', accessorKey: 'userRole' },
+];
 
 function GuitarInventory({ guitars, onSelectGuitar, selectedGuitar }) {
+    const [category, setCategory] = useState('All');
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 5,
     });
 
-    const columns = [
-        { header: 'Guitar Model', accessorKey: 'guitarModel' },
-        { header: 'Body Type', accessorKey: 'bodyType' },
-        { header: 'Brand Name', accessorKey: 'brandName' },
-        { header: 'Stock', accessorKey: 'stockQuantity' },
-        { header: 'Manufacturer', accessorKey: 'manufacturerName' },
-        { header: 'Role', accessorKey: 'userRole' },
-    ];
+    const categories = ['All', 'Electric', 'Acoustic', 'Bass', 'Classical', 'Merchant', 'Consumer'];
+    const filteredGuitars = useMemo(
+        () => category === 'All'
+            ? guitars
+            : guitars.filter(
+                (guitar) => guitar.bodyType === category || guitar.userRole === category,
+            ),
+        [category, guitars],
+    );
+
+    useEffect(() => {
+        setPagination((current) => ({ ...current, pageIndex: 0 }));
+    }, [category]);
 
     const table = useReactTable({
-        data: guitars,
+        data: filteredGuitars,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         onPaginationChange: setPagination,
+        autoResetPageIndex: false,
         state: {
             pagination,
         },
@@ -37,8 +53,23 @@ function GuitarInventory({ guitars, onSelectGuitar, selectedGuitar }) {
         <div className="inventoryCard">
             <h2>Guitar Inventory</h2>
 
-            <div className="inventoryTableWrap">
-                <table className="inventoryTable">
+            <div className="inventoryContent">
+                <nav className="categoryFilter" aria-label="Filter guitars by type or user role">
+                    <span className="categoryLabel">Category</span>
+                    {categories.map((item) => (
+                        <button
+                            key={item}
+                            type="button"
+                            className={category === item ? 'activeCategory' : ''}
+                            onClick={() => setCategory(item)}
+                        >
+                            {item}
+                        </button>
+                    ))}
+                </nav>
+
+                <div className="inventoryTableWrap">
+                    <table className="inventoryTable">
                     <thead>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <tr key={headerGroup.id}>
@@ -78,7 +109,11 @@ function GuitarInventory({ guitars, onSelectGuitar, selectedGuitar }) {
                             );
                         })}
                     </tbody>
-                </table>
+                    </table>
+                    {filteredGuitars.length === 0 && (
+                        <p className="emptyInventory">No guitars in this category yet.</p>
+                    )}
+                </div>
             </div>
 
             <div className="tableActions">

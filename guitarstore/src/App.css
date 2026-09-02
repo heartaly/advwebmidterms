@@ -217,6 +217,61 @@
   font-size: 0.8rem;
 }
 
+.savePromptBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.savePrompt {
+  width: min(360px, 100%);
+  padding: 28px;
+  border: 1px solid rgba(255, 215, 0, 0.5);
+  border-radius: 22px;
+  background: #111111;
+  color: #ffffff;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+}
+
+.savePromptIcon {
+  display: inline-grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffd700;
+  color: #000000;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.savePrompt h3 {
+  margin: 14px 0 8px;
+  font-size: 1.45rem;
+}
+
+.savePrompt p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.savePromptButton {
+  width: 100%;
+  margin-top: 22px;
+  border: 0;
+  border-radius: 999px;
+  background: #ffd700;
+  color: #000000;
+  padding: 12px 18px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
 .inventoryLayout {
   display: flex;
   align-items: flex-start;
@@ -254,6 +309,45 @@
   overflow-x: auto;
 }
 
+.inventoryContent {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.categoryFilter {
+  display: flex;
+  flex: 0 0 130px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.categoryLabel {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.categoryFilter button {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  padding: 9px 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.categoryFilter button:hover,
+.categoryFilter button.activeCategory {
+  background: #ffd700;
+  border-color: #ffd700;
+  color: #000000;
+  font-weight: 700;
+}
+
 .inventoryTable {
   width: 100%;
   border-collapse: collapse;
@@ -261,6 +355,12 @@
   color: #ffffff;
   border-radius: 16px;
   overflow: hidden;
+}
+
+.emptyInventory {
+  color: rgba(255, 255, 255, 0.7);
+  padding: 18px;
+  text-align: center;
 }
 
 .inventoryTable th,
@@ -348,11 +448,6 @@
   text-align: right;
 }
 
-.detailsToggle {
-  margin-top: 20px;
-  width: 100%;
-}
-
 @keyframes slideInFront {
   0% {
     opacity: 0;
@@ -393,5 +488,19 @@
   .formPanel {
     width: 100%;
     justify-content: center;
+  }
+
+  .inventoryContent {
+    flex-direction: column;
+  }
+
+  .categoryFilter {
+    flex-basis: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .categoryLabel {
+    width: 100%;
   }
 }

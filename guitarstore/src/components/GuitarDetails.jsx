@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 
 function GuitarDetails({ guitar }) {
     const [activeGuitar, setActiveGuitar] = useState(null);
-    const [showMerchant, setShowMerchant] = useState(true);
 
     useEffect(() => {
         setActiveGuitar(guitar);
@@ -13,15 +12,6 @@ function GuitarDetails({ guitar }) {
             <div className="detailsCard emptyState">
                 <h2>Guitar Details</h2>
                 <p>Select a guitar from the table.</p>
-            </div>
-        );
-    }
-
-    if (!showMerchant && activeGuitar.userRole === 'Merchant') {
-        return (
-            <div className="detailsCard emptyState">
-                <h2>Guitar Details</h2>
-                <p>Merchant records are hidden.</p>
             </div>
         );
     }
@@ -50,9 +40,6 @@ function GuitarDetails({ guitar }) {
                 <strong>{activeGuitar.userRole}</strong>
             </div>
 
-            <button className="detailsToggle" onClick={() => setShowMerchant(!showMerchant)}>
-                {showMerchant ? 'Hide Merchants' : 'Show Merchants'}
-            </button>
         </div>
     );
 }

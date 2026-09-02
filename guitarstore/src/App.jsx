@@ -17,8 +17,56 @@ const guitarMap = {
     Classical: classical,
 };
 
+const starterGuitars = [
+    {
+        id: 'starter-electric',
+        guitarModel: 'Player Stratocaster',
+        bodyType: 'Electric',
+        brandName: 'Fender',
+        stockQuantity: 8,
+        manufacturerName: 'Fender Musical Instruments',
+        userRole: 'Merchant',
+    },
+    {
+        id: 'starter-acoustic',
+        guitarModel: 'FG800',
+        bodyType: 'Acoustic',
+        brandName: 'Yamaha',
+        stockQuantity: 12,
+        manufacturerName: 'Yamaha Corporation',
+        userRole: 'Merchant',
+    },
+    {
+        id: 'starter-bass',
+        guitarModel: 'Affinity P Bass',
+        bodyType: 'Bass',
+        brandName: 'Squier',
+        stockQuantity: 5,
+        manufacturerName: 'Fender Musical Instruments',
+        userRole: 'Consumer',
+    },
+    {
+        id: 'starter-classical',
+        guitarModel: 'C40 Classical',
+        bodyType: 'Classical',
+        brandName: 'Yamaha',
+        stockQuantity: 6,
+        manufacturerName: 'Yamaha Corporation',
+        userRole: 'Consumer',
+    },
+    {
+        id: 'starter-electric-2',
+        guitarModel: 'Les Paul Studio',
+        bodyType: 'Electric',
+        brandName: 'Gibson',
+        stockQuantity: 3,
+        manufacturerName: 'Gibson Brands',
+        userRole: 'Merchant',
+    },
+];
+
 function App() {
-    const [guitars, setGuitars] = useState([]);
+    const [guitars, setGuitars] = useState(starterGuitars);
     const [selectedBodyType, setSelectedBodyType] = useState('Electric');
     const [selectedGuitar, setSelectedGuitar] = useState(null);
 
