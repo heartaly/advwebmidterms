@@ -58,18 +58,20 @@ function GuitarInventory({ guitars, onSelectGuitar, selectedGuitar }) {
                             const inputId = `filter-${category.toLowerCase()}`;
 
                             return (
-                                <label key={category} htmlFor={inputId}>
+                                <label
+                                    key={category}
+                                    htmlFor={inputId}
+                                    onClick={(event) => event.stopPropagation()}
+                                >
                                     <input
                                         id={inputId}
                                         type="radio"
                                         name="filterCategory"
                                         value={category}
                                         checked={filterCategory === category}
-                                        onChange={() => handleCategoryChange(category)}
+                                        onChange={(event) => handleCategoryChange(event.target.value)}
                                     />
-                                    <span onClick={() => handleCategoryChange(category)}>
-                                        {category}
-                                    </span>
+                                    <span>{category}</span>
                                 </label>
                             );
                         },
